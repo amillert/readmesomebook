@@ -21,7 +21,7 @@ def learn(args):
 
     criterion = nn.NLLLoss(ignore_index=FAKE)
 
-    model = NNModel(vocab_size, 100, FAKE)
+    model = NNModel(vocab_size, args.dims, FAKE)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.eta)
 
     num_batches = len(dataset) // args.batch_size

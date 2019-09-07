@@ -8,6 +8,8 @@ if __name__ == "__main__":
                         help="path to the input data file")
     parser.add_argument("-sw --stop-words", action="store", dest="stopwords_path", required=True,
                         help="path to the stop words file")
+    parser.add_argument("-d --dims", action="store", type=int, dest="dims", default=100,
+                        help="dumber of dimensions - size of vector representing each word")
     parser.add_argument("-w --window", action="store", type=int, dest="window", default=5,
                         help="window of context words")
     parser.add_argument("-b --batch-size", action="store", type=int, dest="batch_size", default=128,
