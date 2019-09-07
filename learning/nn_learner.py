@@ -56,7 +56,7 @@ def learn(args):
         words = dataset.vocab
 
     save_weights(dataset, weights_in, words, epoch + 1)
-    save_results(args, model.__class__.__name__)
+    save_results(args, model.__class__.__name__, loss_total, loss_total / num_batches)
 
 
 def save_weights(dataset, weights, words, epoch):
@@ -66,7 +66,7 @@ def save_weights(dataset, weights, words, epoch):
             vec = weights[dataset.word2idx[word]].reshape(1, -1)[0]
             fout.write(f"{word},{' '.join(vec.astype(str).tolist())}\n")
 
-def save_results(args, model_name):
+def save_results(args, model_name, loss, mean_loss):
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
               f"../results/{model_name}-results.json"), "a") as fout:
         fout.write(json.dumps({
@@ -75,6 +75,8 @@ def save_results(args, model_name):
             "dims": args.dims,
             "eta": args.eta,
             "epochs": args.epochs,
-            "file": os.path.basename(args.input_path)
+            "file": os.path.basename(args.input_path),
+            "total loss": loss,
+            "mean loss": mean_loss,
         }, indent=2))
 
