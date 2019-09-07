@@ -72,6 +72,7 @@ def save_results(args):
         fout.write(json.dumps({
             "window": args.window,
             "batch": args.batch_size,
+            "dims": args.dims,
             "eta": args.eta,
             "epochs": args.epochs,
             "file": os.path.basename(args.input_path)
