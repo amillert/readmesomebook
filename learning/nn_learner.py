@@ -78,5 +78,5 @@ def save_results(args, model_name, loss, mean_loss):
             "file": os.path.basename(args.input_path),
             "total loss": loss,
             "mean loss": mean_loss,
-        }, indent=2))
+        }, indent=2) + ",\n")
 
