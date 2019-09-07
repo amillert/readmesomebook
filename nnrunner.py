@@ -6,8 +6,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-in --input", action="store", dest="input_path", required=True,
                         help="path to the input data file")
-    parser.add_argument("-out --output", action="store", dest="output_path", required=True,
-                        help="path to the output data file for saving learned weights")
     parser.add_argument("-sw --stop-words", action="store", dest="stopwords_path", required=True,
                         help="path to the stop words file")
     parser.add_argument("-w --window", action="store", type=int, dest="window", default=5,
