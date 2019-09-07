@@ -1,10 +1,14 @@
 from custom.custom_dataset import BookDataset
 from models.test import NNModel
-from torch.utils.data import DataLoader
+
+import os
+import json
+import time
+from datetime import datetime
+import numpy as np
 import torch
 import torch.nn as nn
-import numpy as np
-import time
+from torch.utils.data import DataLoader
 
 
 def learn(args):
@@ -17,7 +21,7 @@ def learn(args):
 
     criterion = nn.NLLLoss(ignore_index=FAKE)
 
-    model = NNModel(vocab_size, 500, FAKE)
+    model = NNModel(vocab_size, 100, FAKE)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.eta)
 
     num_batches = len(dataset) // args.batch_size
@@ -46,18 +50,30 @@ def learn(args):
         print(f"total loss: {loss_total}")
         print("~~~~~~~~~~~~~~~~~~")
 
-        # weights_in = model.embedding_layer_in.weight.detach().numpy()
+        weights_in = model.embedding_layer_in.weight.detach().numpy()
         # weights_out = model.embedding_layer_out.weight.detach().numpy()
         # weights = (weights_in + weights_out) / 2
-        # words = dataset.vocab
+        words = dataset.vocab
 
-        # save_weights(args.weights_data_path, dataset, weights, words, epoch + 1)
+    save_weights(dataset, weights_in, words, epoch + 1)
+    save_results(args)
 
-def save_weights(save_weights_path, dataset, weights, words, epoch):
-    with open(save_weights_path, "w") as file:
-        for w in words:
-            vec = weights[dataset.word2idx[w]].reshape(1, -1)[0]
-            file.write(f"{w},{' '.join(vec.astype(str).tolist())}\n")
 
-    print("epoch {epoch + 1} generated and saved")
+def save_weights(dataset, weights, words, epoch):
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+              f"../results/weights/{datetime.now()}.csv"), "w") as fout:
+        for word in words:
+            vec = weights[dataset.word2idx[word]].reshape(1, -1)[0]
+            fout.write(f"{word},{' '.join(vec.astype(str).tolist())}\n")
+
+def save_results(args):
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+              f"../results/{model.__class__.__name__}-results.json"), "a") as fout:
+        fout.write(json.dumps({
+            "window": args.window,
+            "batch": args.batch_size,
+            "eta": args.eta,
+            "epochs": args.epochs,
+            "file": os.path.basename(args.input_path)
+        }, indent=2))
 
